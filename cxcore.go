@@ -329,14 +329,14 @@ func (mat *SparseMat) Clone() *SparseMat {
 
 /* Initializes sparse array iterator
    (returns the first node or NULL if the array is empty) */
-func (mat *SparseMat)InitSparseMatIterator(iter *SparseMatIterator) *SparseNode {
+func (mat *SparseMat) InitSparseMatIterator(iter *SparseMatIterator) *SparseNode {
 	mat_c := (*C.CvSparseMat)(mat)
 	node := C.cvInitSparseMatIterator(mat_c, (*C.CvSparseMatIterator)(iter))
 	return (*SparseNode)(node)
 }
 
 // returns next sparse array node (or NULL if there is no more nodes)
-func (iter *SparseMatIterator)Next() *SparseNode {
+func (iter *SparseMatIterator) Next() *SparseNode {
 	node := C.cvGetNextSparseNode((*C.CvSparseMatIterator)(iter))
 	return (*SparseNode)(node)
 }
@@ -358,7 +358,7 @@ func GetSizeHeight(img *IplImage) int {
 }
 func GetSize(img *IplImage) Size {
 	sz := C.cvGetSize(unsafe.Pointer(img))
-	return Size{ int(sz.width), int(sz.height) }
+	return Size{int(sz.width), int(sz.height)}
 
 }
 
@@ -366,6 +366,7 @@ func GetSize(img *IplImage) Size {
 func Copy(src, dst, mask *IplImage) {
 	C.cvCopy(unsafe.Pointer(src), unsafe.Pointer(dst), unsafe.Pointer(mask))
 }
+
 //CVAPI(void)  cvCopy( const CvArr* src, CvArr* dst,
 //                     const CvArr* mask CV_DEFAULT(NULL) );
 
@@ -373,50 +374,40 @@ func Copy(src, dst, mask *IplImage) {
 func Zero(img *IplImage) {
 	C.cvSetZero(unsafe.Pointer(img))
 }
+
 //CVAPI(void)  cvSetZero( CvArr* arr );
 //#define cvZero  cvSetZero
-
 
 /****************************************************************************************\
 *                   Arithmetic, logic and comparison operations               *
 \****************************************************************************************/
 
-
 /* dst(idx) = ~src(idx) */
 func Not(src, dst *IplImage) {
 	C.cvNot(unsafe.Pointer(src), unsafe.Pointer(dst))
 }
+
 //CVAPI(void) cvNot( const CvArr* src, CvArr* dst );
 
 /****************************************************************************************\
 *                                Math operations                              *
 \****************************************************************************************/
 
-
 /****************************************************************************************\
 *                                Matrix operations                            *
 \****************************************************************************************/
-
-
 
 /****************************************************************************************\
 *                                    Array Statistics                         *
 \****************************************************************************************/
 
-
-
 /****************************************************************************************\
 *                      Discrete Linear Transforms and Related Functions       *
 \****************************************************************************************/
 
-
-
-
 /****************************************************************************************\
 *                              Dynamic data structures                        *
 \****************************************************************************************/
-
-
 
 /****************************************************************************************\
 *                                     Drawing                                 *
@@ -439,19 +430,10 @@ func Line(image *IplImage, pt1, pt2 Point, color Scalar, thickness, line_type, s
 //                     CvScalar color, int thickness CV_DEFAULT(1),
 //                     int line_type CV_DEFAULT(8), int shift CV_DEFAULT(0) );
 
-
 /****************************************************************************************\
 *                                    System functions                         *
 \****************************************************************************************/
 
-
 /****************************************************************************************\
 *                                    Data Persistence                         *
 \****************************************************************************************/
-
-
-
-
-
-
-

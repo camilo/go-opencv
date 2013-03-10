@@ -67,6 +67,14 @@ static void freeFloatPointersArray(float **arr, int size){
   free(arr);
 }
 
+static IplImage** makeIplImagePointersArray(int size){
+  return calloc(sizeof(IplImage*), size);
+}
+
+static void setIplImagePointerAt(IplImage **arr, IplImage *val, int position) {
+  arr[position] = val;
+}
+
 //-----------------------------------------------------------------------------
 */
 import "C"
@@ -491,13 +499,19 @@ func CreateHist(dims int, numbins int, _type C.int, ranges []float64, uniform bo
 	var c_numbins C.int
 	var c_range C.float
 	var c_uniform C.int
+	var c_ranges **C.float
 
 	c_numbins = C.int(numbins)
-	c_ranges := C.makeFloatPointersArray(C.int(len(ranges)))
 
-	for i, f := range ranges {
-		c_range = C.float(f)
-		C.setFloatPointerAt(c_ranges, &c_range, C.int(i))
+	if ranges == nil {
+		c_ranges = nil
+	} else {
+		c_ranges := C.makeFloatPointersArray(C.int(len(ranges)))
+
+		for i, f := range ranges {
+			c_range = C.float(f)
+			C.setFloatPointerAt(c_ranges, &c_range, C.int(i))
+		}
 	}
 
 	if uniform {
@@ -506,7 +520,7 @@ func CreateHist(dims int, numbins int, _type C.int, ranges []float64, uniform bo
 		c_uniform = C.int(0)
 	}
 
-	hist = C.cvCreateHist(C.int(dims), &c_numbins, C.CV_HIST_ARRAY, c_ranges, c_uniform)
+	hist = C.cvCreateHist(C.int(dims), &c_numbins, _type, c_ranges, c_uniform)
 	return (*Histogram)(hist)
 }
 
@@ -516,8 +530,29 @@ func (hist *Histogram) Release() {
 }
 
 func (hist *Histogram) Clear() {
-	hist_c := (*C.CvHistogram)(hist)
-	C.cvClearHist(hist_c)
+	c_hist := (*C.CvHistogram)(hist)
+	C.cvClearHist(c_hist)
+}
+
+func (hist *Histogram) CalcHist(images []*IplImage, accumulate bool, mask *Arr) {
+	var c_image *C.IplImage
+	var c_accumulate C.int
+	c_images := C.makeIplImagePointersArray(C.int(len(images)))
+
+	for index, image := range images {
+		c_image = (*C.IplImage)(image)
+		C.setIplImagePointerAt(c_images, c_image, C.int(index))
+	}
+
+	if accumulate {
+		c_accumulate = C.int(1)
+	} else {
+		c_accumulate = C.int(0)
+	}
+
+	c_hist := (*C.CvHistogram)(hist)
+	C.cvCalcHist(c_images, c_hist, c_accumulate, nil)
+	C.free((unsafe.Pointer)(c_images))
 }
 
 /****************************************************************************************\
