@@ -1,7 +1,6 @@
 package opencv
 
 import (
-	"fmt"
 	"testing"
 )
 
@@ -18,8 +17,7 @@ func TestCalcHist(t *testing.T) {
 	if img == nil {
 		t.Error("Could not load image")
 	}
-	grayImg := CreateImage(img.Width(),
-		img.Height(), IPL_DEPTH_8U, 1)
+	grayImg := CreateImage(img.Width(), img.Height(), IPL_DEPTH_8U, 1)
 
 	CvtColor(img, grayImg, CV_BGR2GRAY)
 
@@ -30,6 +28,5 @@ func TestCalcHist(t *testing.T) {
 
 	images := []*IplImage{grayImg}
 	h.CalcHist(images, false, nil)
-	fmt.Printf("%v", h)
 	defer h.Clear()
 }
