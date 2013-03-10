@@ -1,7 +1,6 @@
 package opencv
 
 import (
-	"fmt"
 	"testing"
 )
 
@@ -30,6 +29,5 @@ func TestCalcHist(t *testing.T) {
 
 	images := []*IplImage{grayImg}
 	h.CalcHist(images, false, nil)
-	fmt.Printf("%v", h)
 	defer h.Clear()
 }
