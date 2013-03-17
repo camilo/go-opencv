@@ -537,6 +537,7 @@ func (hist *Histogram) Clear() {
 func (hist *Histogram) CalcHist(images []*IplImage, accumulate bool, mask *Arr) {
 	var c_image *C.IplImage
 	var c_accumulate C.int
+
 	c_images := C.makeIplImagePointersArray(C.int(len(images)))
 
 	for index, image := range images {
@@ -551,7 +552,8 @@ func (hist *Histogram) CalcHist(images []*IplImage, accumulate bool, mask *Arr) 
 	}
 
 	c_hist := (*C.CvHistogram)(hist)
-	C.cvCalcHist(c_images, c_hist, c_accumulate, nil)
+	C.cvCalcHist(c_images, c_hist, c_accumulate, unsafe.Pointer(mask))
+
 	C.free((unsafe.Pointer)(c_images))
 }
 
