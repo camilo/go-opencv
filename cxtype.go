@@ -557,6 +557,12 @@ func (hist *Histogram) CalcHist(images []*IplImage, accumulate bool, mask *Arr) 
 	C.free((unsafe.Pointer)(c_images))
 }
 
+//This is really a macro in C-land, might as well keep the API.
+func (hist *Histogram) QueryHistValue_1D(position int64) float64 {
+	c_hist := (*C.CvHistogram)(hist)
+	return float64(C.cvGetReal1D(c_hist.bins, C.int(position)))
+}
+
 /****************************************************************************************\
 *                      Other supplementary data type definitions                         *
 \****************************************************************************************/

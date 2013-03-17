@@ -28,5 +28,10 @@ func TestCalcHist(t *testing.T) {
 
 	images := []*IplImage{grayImg}
 	h.CalcHist(images, false, nil)
-	defer h.Clear()
+
+	if h.QueryHistValue_1D(0) < 0 {
+		t.Error("Negative value")
+	}
+
+	h.Clear()
 }
